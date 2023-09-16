@@ -86,13 +86,13 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  int led_status=0;
   /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
   while (1)
-    {
+  {
   	  if(led_status==0){
   		  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
   		  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
@@ -104,7 +104,7 @@ int main(void)
   		  led_status=0;
   	  }
   	  HAL_Delay(2000);
-    }
+  }
   /* USER CODE END 3 */
 }
 
