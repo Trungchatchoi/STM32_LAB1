@@ -32,6 +32,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define RED_GREEN 0
+#define RED_YELLOW 1
+#define GREEN_RED 2
+#define YELLOW_RED 3
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -88,43 +92,64 @@ int main(void)
   /* USER CODE BEGIN 2 */
   int led_status=0,on_sec=0;
   /* USER CODE END 2 */
+  HAL_GPIO_WritePin(GPIOA, A5_Pin, 1);
+  HAL_GPIO_WritePin(GPIOA, A6_Pin, 1);
+  HAL_GPIO_WritePin(GPIOA, A7_Pin, 1);
+  HAL_GPIO_WritePin(GPIOB, B5_Pin, 1);
+  HAL_GPIO_WritePin(GPIOB, B6_Pin, 1);
+  HAL_GPIO_WritePin(GPIOB, B7_Pin, 1);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-  	  if(led_status==0){
-  		  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-  		  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-  		  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-  		  if(on_sec==4){
-  			  led_status=1;
-  			  on_sec=0;
-  		  }
-  		  else on_sec++;
-  	  }
-  	  else if(led_status==1){
-  		  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-  		  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
-  		  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-  		  if(on_sec==1){
-  			  led_status=2;
-  		  	  on_sec=0;
-  		  }
-  		  else on_sec++;
-  	  }
-  	  else{
-  		  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-  		  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-  		  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-  		  if(on_sec==2){
-  			  led_status=0;
-  			  on_sec=0;
-  		  }
-  		  else on_sec++;
-  	  }
-  	  HAL_Delay(1000);
-   }
+    /* USER CODE END WHILE */
+	switch (led_status){
+		case RED_GREEN:
+			HAL_GPIO_WritePin(GPIOA, A5_Pin, 0);
+			HAL_GPIO_WritePin(GPIOA, A7_Pin, 1);
+			HAL_GPIO_WritePin(GPIOB, B5_Pin, 1);
+			HAL_GPIO_WritePin(GPIOB, B6_Pin, 0);
+			if(on_sec>1){
+				led_status=RED_YELLOW;
+				on_sec=0;
+			}
+			else on_sec++;
+			break;
+		case RED_YELLOW:
+			HAL_GPIO_WritePin(GPIOA, A5_Pin, 0);
+			HAL_GPIO_WritePin(GPIOB, B6_Pin, 1);
+			HAL_GPIO_WritePin(GPIOB, B7_Pin, 0);
+			if(on_sec>0){
+				led_status=GREEN_RED;
+				on_sec=0;
+			}
+			else on_sec++;
+			break;
+		case GREEN_RED:
+			HAL_GPIO_WritePin(GPIOA, A5_Pin, 1);
+			HAL_GPIO_WritePin(GPIOA, A6_Pin, 0);
+			HAL_GPIO_WritePin(GPIOB, B5_Pin, 0);
+			HAL_GPIO_WritePin(GPIOB, B7_Pin, 1);
+			if(on_sec>1){
+				led_status=YELLOW_RED;
+				on_sec=0;
+			}
+			else on_sec++;
+			break;
+		default:
+			HAL_GPIO_WritePin(GPIOA, A6_Pin, 1);
+			HAL_GPIO_WritePin(GPIOA, A7_Pin, 0);
+			if(on_sec>0){
+				led_status=RED_GREEN;
+				on_sec=0;
+			}
+			else on_sec++;
+	}
+	HAL_Delay(1000);
+
+    /* USER CODE BEGIN 3 */
+  }
   /* USER CODE END 3 */
 }
 
@@ -174,16 +199,27 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, A5_Pin|A6_Pin|A7_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_RED_Pin LED_YELLOW_Pin LED_GREEN_Pin */
-  GPIO_InitStruct.Pin = LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin;
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, B5_Pin|B6_Pin|B7_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : A5_Pin A6_Pin A7_Pin */
+  GPIO_InitStruct.Pin = A5_Pin|A6_Pin|A7_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : B5_Pin B6_Pin B7_Pin */
+  GPIO_InitStruct.Pin = B5_Pin|B6_Pin|B7_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
