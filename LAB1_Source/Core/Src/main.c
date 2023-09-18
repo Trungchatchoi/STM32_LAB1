@@ -49,7 +49,9 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
-
+void clearAllClock(){
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_All, 1);
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
