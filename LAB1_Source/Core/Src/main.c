@@ -168,17 +168,33 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-
+  int hour=0,minute=0,second=0;
+  setNumberOnClock(hour);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    while (1)
-    {
 
-    	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_All, 0);
+  while (1)
+  {
     /* USER CODE END WHILE */
-    	HAL_Delay(1000);
+	  clearAllClock();
+	  if(second==60){
+		  second=0;
+		  minute++;
+	  }
+	  if(minute==60){
+		  minute=0;
+		  hour++;
+	  }
+	  if(hour=12){
+		  hour=0;
+	  }
+	  setNumberOnClock(second/5);
+	  setNumberOnClock(minute/5);
+	  setNumberOnClock(hour);
+	  second++;
+	  HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
-    }
+  }
   /* USER CODE END 3 */
 }
 
